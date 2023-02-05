@@ -1,0 +1,47 @@
+{% include 'header.html' %}
+
+{% block content %}
+ <div class="card">
+      <div class="card-body">
+        <div class="col-lg-6">
+            <h3 class="card-title">Audios</h3>
+        </div>
+        <div class="row add-btn">
+            <div class="col-lg-6">
+                <a href="add-new" class="btn btn-success float-right">Add New Pdf</a>
+                <button href="javascript:void(0);" class="btn btn-danger del-mul-btn">Delete Selected</button>
+            </div>
+        </div>
+          <form action="delete-files" class="delete_files" method="POST">
+              {% csrf_token %}
+              <input type="hidden" id="ids" name="ids" value="">
+          </form>
+        <!-- Table with hoverable rows -->
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">&nbsp</th>
+              <th scope="col">Files</th>
+              <th scope="col">uploaded at</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for audio in audios %}
+            <tr>
+              <td scope="row"><input type="checkbox" name="select_row" id="slct_{{audio.id}}" value="{{audio.id}}"></td>
+              <td>{{audio.name}}</td>
+              <td>{{audio.upload_date}}</td>
+              <td>
+                <a href="play-audio/{{audio.name}}/1" class="btn btn-primary"><i class="bi bi-play"></i></a>
+                <a href="pause-audio/{{audio.name}}/0" class="btn btn-danger"><i class="bi bi-pause"></i></a>
+                <a href="javascript:void(0);" class="btn btn-danger del-single-btn" data-id="{{audio.id}}"><i class="bi bi-trash"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+{% endblock %}
