@@ -7,9 +7,42 @@
             <h3 class="card-title">Audios</h3>
         </div>
         <div class="row add-btn">
-            <div class="col-lg-6">
-                <a href="add-new" class="btn btn-success float-right">Add New Pdf</a>
-                <button href="javascript:void(0);" class="btn btn-danger del-mul-btn">Delete Selected</button>
+            <div class="col-lg-6 float-left">
+                <a href="add-new" class="btn btn-success">Add New Pdf</a>
+                <button class="btn btn-danger del-mul-btn">Delete Selected</button>
+            </div>
+             <div class="col-lg-6 float-right">
+                <form action="change-settings" name="change-settings" id="change-settings" method="POST">
+                    {% csrf_token %}
+                    <label>Voice</label>
+                    <select name="voice" id="voice">
+                        <option value="0">Male</option>
+                        <option value="1">Female</option>
+                    </select>
+                    <label>Volume</label>
+                    <select name="volume" id="volume">
+                        <option value="0.0">0</option>
+                        <option value="0.2">0.2</option>
+                        <option value="0.4">0.4</option>
+                        <option value="0.6" selected>0.6</option>
+                        <option value="0.8">0.8</option>
+                        <option value="1">1</option>
+                    </select>
+                    <label>Rate</label>
+                    <select name="rate" id="rate">
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="150">150</option>
+                        <option value="200">200</option>
+                        <option value="250" selected>250</option>
+                        <option value="300">300</option>
+                        <option value="350">350</option>
+                        <option value="400">400</option>
+                        <option value="450">450</option>
+                        <option value="500">500</option>
+                    </select>
+                    <button type="submit" class="btn btn-default apply-btn">Apply</button>
+                </form>
             </div>
         </div>
           <form action="delete-files" class="delete_files" method="POST">
@@ -45,3 +78,4 @@
     </div>
 
 {% endblock %}
+

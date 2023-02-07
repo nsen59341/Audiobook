@@ -1,5 +1,7 @@
 import os
 
+from django.views.generic.edit import FormView
+
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Audio
@@ -18,6 +20,19 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 paused = False
 myfile = ''
 
+#settings variable
+voice = 0
+volume = 0.6
+rate = 250
+
+def change_settings(request):
+    data = request.POST
+    global voice, volume, rate
+    voice = int(data['voice'])
+    volume = float(data['volume'])
+    rate = float(data['rate'])
+    return HttpResponseRedirect('/audios')
+
 # Create your views here.
 def index(request):
     audios = Audio.objects.all()
@@ -26,6 +41,8 @@ def index(request):
 def play_audio(request, fl, i):
     global paused
     global myfile
+
+    print(voice, volume, rate)
 
     # url = "http://127.0.0.1:8000/audios"+static('uploads/'+fl)
     url = staticfiles_storage.url('uploads/'+fl)
@@ -42,6 +59,11 @@ def play_audio(request, fl, i):
     no_of_pgs = len(pdfreader.pages)
     # no_of_words = len(pdfreader)
     engine = pyttsx3.init()
+
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[voice].id)
+    engine.setProperty('volume', volume)
+    engine.setProperty('rate', rate)
 
     paused = False
 
@@ -104,27 +126,32 @@ def pause_audio(request, fl, i):
 
 # Add new Audio
 
+# class PdfFormView(FormView):
+#     form_class = PdfForm
+#     template_name = 'add-pdf.html'
+
 def add_new_audio(request):
     pdf_form = PdfForm()
     return render(request, 'add-pdf.html', {'pdf_form': pdf_form.as_div()})
 
 def upload_pdf(request):
-    data = request.FILES
+    files = request.FILES.getlist('name')
     pdf_form = PdfForm(request.POST, request.FILES)
     if pdf_form.is_valid():
-        extn = pathlib.Path(data['filename'].name).suffix
-        print('extn '+extn)
-        if extn == '.pdf':
-            if Audio.objects.filter(name=data['filename'].name).exists():
-                raise Exception("File already uploaded.")
+        for file in files:
+            extn = pathlib.Path(file.name).suffix
+            print('extn '+extn)
+            if extn == '.pdf':
+                if Audio.objects.filter(name=file.name).exists():
+                    raise Exception("File already uploaded.")
+                else:
+                    audio = Audio()
+                    audio.name = file
+                    audio.save()
+                    saveFile(file)
             else:
-                audio = Audio()
-                audio.name = data['filename']
-                audio.save()
-                saveFile(data['filename'])
-                return HttpResponseRedirect('/audios')
-        else:
-            raise Exception("File must be a pdf file!")
+                raise Exception("File must be a pdf file!")
+        return HttpResponseRedirect('/audios')
     else:
         raise Exception("Form is not valid!")
 
@@ -149,3 +176,5 @@ def delete_files(request):
         os.remove(url)
         audio.delete()
     return HttpResponseRedirect("/audios")
+
+

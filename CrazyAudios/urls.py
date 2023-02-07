@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, play_audio, pause_audio, add_new_audio, upload_pdf, delete_files
+from .views import index, play_audio, pause_audio, add_new_audio, upload_pdf, delete_files, change_settings
 
 urlpatterns = [
     path('', index),
@@ -8,5 +8,6 @@ urlpatterns = [
     path('add-new', add_new_audio),
     path('upload-pdf', upload_pdf),
     path('delete-files', delete_files),
+    path('change-settings', change_settings),
 ]
 
