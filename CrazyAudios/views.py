@@ -21,22 +21,23 @@ paused = False
 myfile = ''
 
 #settings variable
-voice = 0
+voice = 0.0
 volume = 0.6
 rate = 250
-
-def change_settings(request):
-    data = request.POST
-    global voice, volume, rate
-    voice = int(data['voice'])
-    volume = float(data['volume'])
-    rate = float(data['rate'])
-    return HttpResponseRedirect('/audios')
 
 # Create your views here.
 def index(request):
     audios = Audio.objects.all()
-    return render(request, 'index.html', {'audios':audios})
+    if request.method == "GET":
+        return render(request, 'index.html', {'audios':audios})
+    else:
+        data = request.POST
+        global voice, volume, rate
+        voice = int(data['voice'])
+        volume = float(data['volume'])
+        rate = float(data['rate'])
+        audios = Audio.objects.all()
+        return render(request, 'index.html', {'voice': voice, 'volume': volume, 'rate': rate, 'audios': audios})
 
 def play_audio(request, fl, i):
     global paused
@@ -72,16 +73,16 @@ def play_audio(request, fl, i):
     content = []
 
     if (i == 1):
-        no_of_words = 0
+        no_of_lines = 0
         for i in range(no_of_pgs):
             page = pdfreader.pages[i]
             text = page.extract_text()
-            words = text.split()
-            content.extend(words)
-            no_of_words += len(text.split())
+            lines = text.split('.')
+            content.extend(lines)
+            no_of_lines += len(text.split())
         # print(content)
 
-        for n in range(0, no_of_words):
+        for n in range(0, no_of_lines):
             # print("After", content[n], paused)
             if not paused:
                 engine.say(content[n])

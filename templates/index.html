@@ -1,6 +1,7 @@
 {% include 'header.html' %}
 
 {% block content %}
+
  <div class="card">
       <div class="card-body">
         <div class="col-lg-6">
@@ -12,7 +13,7 @@
                 <button class="btn btn-danger del-mul-btn">Delete Selected</button>
             </div>
              <div class="col-lg-6 float-right">
-                <form action="change-settings" name="change-settings" id="change-settings" method="POST">
+                <form action="" name="change-settings" id="change-settings" method="POST">
                     {% csrf_token %}
                     <label>Voice</label>
                     <select name="voice" id="voice">
@@ -76,6 +77,38 @@
         </table>
       </div>
     </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            var voice = "{{voice}}";
+            var volume = "{{volume}}";
+            var rate = "{{rate}}";
+
+            console.log("voice "+voice);
+             console.log("volume "+volume);
+              console.log("rate "+rate);
+
+            if(voice.length!=0)
+            {
+                $("#voice option").attr('selected', false);
+                $("#voice option[value='"+voice+"']").attr('selected', true);
+            }
+            if(volume.length!=0)
+            {
+                $("#volume option").attr('selected', false);
+                $("#volume option[value='"+volume+"']").attr('selected', true);
+            }
+            if(rate.length!=0)
+            {
+                $("#rate option").attr('selected', false);
+                $("#rate option[value='"+parseInt(rate)+"']").attr('selected', true);
+            }
+
+        });
+
+    </script>
 
 {% endblock %}
 
