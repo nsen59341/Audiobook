@@ -19,9 +19,10 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 
 paused = False
 myfile = ''
+flag1 = 1
 
 #settings variable
-voice = 0.0
+voice = 0
 volume = 0.6
 rate = 250
 
@@ -42,94 +43,68 @@ def index(request):
 def play_audio(request, fl, i):
     global paused
     global myfile
+    global flag1
 
-    print(voice, volume, rate)
+
+    # print(voice, volume, rate)
 
     # url = "http://127.0.0.1:8000/audios"+static('uploads/'+fl)
     url = staticfiles_storage.url('uploads/'+fl)
     url = "CrazyAudios"+url
     myfile = fl
-    # print("Before Init", paused)
-    # return HttpResponse(url)
-    # reader = PdfReader(url+fl)
-    # pdfFileObj = open(url, 'r')
-    # pdfreader = PdfFileReader(pdfFileObj)
-    # return HttpResponse(pdfFileObj)
+
     url = url.replace('%20', ' ')
     pdfreader = PdfReader(url)
     no_of_pgs = len(pdfreader.pages)
     # no_of_words = len(pdfreader)
-    engine = pyttsx3.init()
 
-    voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[voice].id)
-    engine.setProperty('volume', volume)
-    engine.setProperty('rate', rate)
+    if flag1==0:
+        return HttpResponseRedirect('/audios')
+    else:
+        engine = pyttsx3.init()
 
-    paused = False
+        voices = engine.getProperty('voices')
+        engine.setProperty('voice', voices[voice].id)
+        engine.setProperty('volume', volume)
+        engine.setProperty('rate', rate)
 
-    # print("After Init", paused)
+        paused = False
 
-    content = []
+        content = []
 
-    if (i == 1):
-        no_of_lines = 0
-        for i in range(no_of_pgs):
-            page = pdfreader.pages[i]
-            text = page.extract_text()
-            lines = text.split('.')
-            content.extend(lines)
-            no_of_lines += len(text.split())
-        # print(content)
+        if (i == 1):
+            no_of_lines = 0
+            for i in range(no_of_pgs):
+                page = pdfreader.pages[i]
+                text = page.extract_text()
+                lines = text.split('.')
+                content.extend(lines)
+                no_of_lines += len(text.split())
+            # print(content)
 
-        for n in range(0, no_of_lines):
-            # print("After", content[n], paused)
-            if not paused:
-                engine.say(content[n])
-                # engine.runAndWait()
-                engine.runAndWait()
+            for n in range(0, no_of_lines):
+                # print("After", content[n], paused)
+                if not paused:
+                    flag1 = 0
+                    engine.say(content[n])
+                    # engine.runAndWait()
+                    engine.runAndWait()
 
-        engine.stop()
-    # if (i == 0):
-    #     # close the original pdf file object
-    #     global term
-    #     term = True
-    #     t.join()
-        # return HttpResponse(no_of_pgs)
-    # engine = pyttsx3.init()
-    # for p in range(0, no_of_pgs):
-    #     page = reader.pages[p]
-    #     text = page.extract_text()
-    #     engine.say(text)
-    #     engine.runAndWait()
-    return HttpResponseRedirect('/audios')
+            engine.stop()
+            flag1 = 1
+        return HttpResponseRedirect('/audios')
 
 def pause_audio(request, fl, i):
     global paused
-    # print("Before Init", paused)
-    # print("myfile", myfile)
-    # print("current file", fl)
+    global flag
     if myfile==fl:
         paused = True
+        flag1 = 1
     # print("After Paused", paused)
     return HttpResponseRedirect('/audios')
-# def say(phrase):
-# 	if __name__ == "__main__":
-# 		p = multiprocessing.Process(target=play_audio, args=(phrase,))
-# 		p.start()
-# 		while p.is_alive():
-# 			if keyboard.is_pressed('q'):
-# 				p.terminate()
-# 			else:
-# 				continue
-# 		p.join()
 
 
 # Add new Audio
-
-# class PdfFormView(FormView):
-#     form_class = PdfForm
-#     template_name = 'add-pdf.html'
 
 def add_new_audio(request):
     pdf_form = PdfForm()
