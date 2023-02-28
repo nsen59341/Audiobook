@@ -29,6 +29,34 @@
 
 </head>
 <body>
+
+    <!--Navbar-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="False" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav mr-auto">
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="#">Welcome, {{user.username}}</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/audios/logout">Logout</a>
+        </li>
+
+        {% else %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="/audios/login">Login</a>
+        </li>
+
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
     {% block content %} {% endblock %}
 
   <script src="{% static 'apexcharts/apexcharts.min.js' %}"></script>

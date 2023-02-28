@@ -1,21 +1,21 @@
 import os
 
-from django.views.generic.edit import FormView
-
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Audio
-from .forms import PdfForm
+from .forms import NewUserForm, PdfForm
 
 from PyPDF2 import PdfReader, PdfFileReader
 import pyttsx3
-import multiprocessing
-import keyboard
 import pathlib
 
+from django.contrib.auth import login, authenticate, logout
+from django.contrib import messages
 import time
 from django.templatetags.static import static
 from django.contrib.staticfiles.storage import staticfiles_storage
+
+from django.contrib.auth.forms import AuthenticationForm
 
 paused = False
 myfile = ''
@@ -154,3 +154,43 @@ def delete_files(request):
     return HttpResponseRedirect("/audios")
 
 
+# Registration
+
+def register_request(request):
+    if request.method=='POST':
+        userform = NewUserForm(request.POST)
+        if userform.is_valid():
+            userform.save()
+            return HttpResponseRedirect('/audios/login')
+        messages.error(request, 'Unsuccessful Registration. Invalid Information')
+    userform = NewUserForm()
+    return render(request=request, template_name='register.html', context={'register_form': userform})
+
+
+# Login Authentication
+
+def login_request(request):
+    if request.method=='POST':
+        userform = AuthenticationForm(request, request.POST)
+        # print('userform', userform)
+        if userform.is_valid():
+            uname = userform.cleaned_data.get('username')
+            pwd = userform.cleaned_data.get('password')
+            user = authenticate(username=uname, password=pwd)
+            print('user', user)
+            if user is not None:
+                login(request, user)
+                messages.info(request, 'Successfully Registered')
+                return HttpResponseRedirect('/audios')
+            else:
+                messages.error(request, 'Invalid Username or Password')
+        else:
+            messages.error(request, 'Invalid Username and Password')
+    userform = AuthenticationForm()
+    return render(request, template_name="login.html", context={'login_form':userform})
+
+
+def logout_request(request):
+    logout(request)
+    messages.info(request, "User successfully logged out")
+    return HttpResponseRedirect('/audios/login')
