@@ -1286,3 +1286,11 @@ h6 {
     margin-top: 20px;
     margin-bottom: 10px;
 }
+
+.login-div{
+    margin: 10% 450px;
+}
+
+.reg-div {
+    margin: 10px 450px;
+}
