@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-%i)cejtiyf31c36arizn9ep$a4j1)=pzdv13chp7r)i!uiwd42
 DEBUG = True
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['127.0.0.1','52.66.244.167','.vercel.app']
 
 
 # Application definition
