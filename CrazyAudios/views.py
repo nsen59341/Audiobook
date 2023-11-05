@@ -37,7 +37,7 @@ def index(request):
         voice = int(data['voice'])
         volume = float(data['volume'])
         rate = float(data['rate'])
-        audios = Audio.objects.all()
+        # audios = Audio.objects.all()
         return render(request, 'index.html', {'voice': voice, 'volume': volume, 'rate': rate, 'audios': audios})
 
 def play_audio(request, fl, i):

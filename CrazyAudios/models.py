@@ -6,4 +6,4 @@ class Audio(models.Model):
     upload_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return u'%s' % (self.name)
+        return '%s' % (self.name)

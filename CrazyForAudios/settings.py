@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-%i)cejtiyf31c36arizn9ep$a4j1)=pzdv13chp7r)i!uiwd42
 DEBUG = True
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = ['127.0.0.1','52.66.244.167']
+ALLOWED_HOSTS = ['.vercel.app']
 
 
 # Application definition
@@ -48,6 +48,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
