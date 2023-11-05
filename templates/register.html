@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content  %}
+
+{% if user.is_authenticated %}
+    <script>
+        window.location.href = "/audios";
+    </script>
+{% endif %}
+
+{% load crispy_forms_tags %}
+
+<div class="reg-div">
+    <h3>Create Your Account</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ register_form | crispy }}
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form>
+</div>
+
+<p class="text-center">If you already have an account, <a href="/audios/login">login</a> instead.</p>
+
+
+{% endblock %}

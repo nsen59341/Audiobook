@@ -1,0 +1,116 @@
+{% include 'authentication.html' %}
+
+{% include 'header.html' %}
+
+{% block content %}
+
+ <div class="card">
+      <div class="card-body">
+        <div class="col-lg-6">
+            <h3 class="card-title">Audios</h3>
+        </div>
+        <div class="row add-btn">
+            <div class="col-lg-6 float-left">
+                <a href="add-new" class="btn btn-success">Add New Pdf</a>
+                <button class="btn btn-danger del-mul-btn">Delete Selected</button>
+            </div>
+             <div class="col-lg-6 float-right">
+                <form action="" name="change-settings" id="change-settings" method="POST">
+                    {% csrf_token %}
+                    <label>Voice</label>
+                    <select name="voice" id="voice">
+                        <option value="0">Male</option>
+                        <option value="1">Female</option>
+                    </select>
+                    <label>Volume</label>
+                    <select name="volume" id="volume">
+                        <option value="0.0">0</option>
+                        <option value="0.2">0.2</option>
+                        <option value="0.4">0.4</option>
+                        <option value="0.6" selected>0.6</option>
+                        <option value="0.8">0.8</option>
+                        <option value="1">1</option>
+                    </select>
+                    <label>Rate</label>
+                    <select name="rate" id="rate">
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="150">150</option>
+                        <option value="200">200</option>
+                        <option value="250" selected>250</option>
+                        <option value="300">300</option>
+                        <option value="350">350</option>
+                        <option value="400">400</option>
+                        <option value="450">450</option>
+                        <option value="500">500</option>
+                    </select>
+                    <button type="submit" class="btn btn-default apply-btn">Apply</button>
+                </form>
+            </div>
+        </div>
+          <form action="delete-files" class="delete_files" method="POST">
+              {% csrf_token %}
+              <input type="hidden" id="ids" name="ids" value="">
+          </form>
+        <!-- Table with hoverable rows -->
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">&nbsp</th>
+              <th scope="col">Files</th>
+              <th scope="col">uploaded at</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for audio in audios %}
+            <tr>
+              <td scope="row"><input type="checkbox" name="select_row" id="slct_{{audio.id}}" value="{{audio.id}}"></td>
+              <td>{{audio.name}}</td>
+              <td>{{audio.upload_date}}</td>
+              <td>
+                <a href="play-audio/{{audio.name}}/1" class="btn btn-primary"><i class="bi bi-play"></i></a>
+                <a href="pause-audio/{{audio.name}}/0" class="btn btn-danger"><i class="bi bi-pause"></i></a>
+                <a href="javascript:void(0);" class="btn btn-danger del-single-btn" data-id="{{audio.id}}"><i class="bi bi-trash"></i></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            var voice = "{{voice}}";
+            var volume = "{{volume}}";
+            var rate = "{{rate}}";
+
+            console.log("voice "+voice);
+             console.log("volume "+volume);
+              console.log("rate "+rate);
+
+            if(voice.length!=0)
+            {
+                $("#voice option").attr('selected', false);
+                $("#voice option[value='"+voice+"']").attr('selected', true);
+            }
+            if(volume.length!=0)
+            {
+                $("#volume option").attr('selected', false);
+                $("#volume option[value='"+volume+"']").attr('selected', true);
+            }
+            if(rate.length!=0)
+            {
+                $("#rate option").attr('selected', false);
+                $("#rate option[value='"+parseInt(rate)+"']").attr('selected', true);
+            }
+
+        });
+
+    </script>
+
+{% endblock %}
+
